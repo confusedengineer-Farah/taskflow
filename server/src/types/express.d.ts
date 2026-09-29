@@ -1,7 +1,7 @@
 declare global {
     namespace Express {
-        interface Router {
-            userId: number;
+        interface Request {
+            userId?: number;
         }
     }
 }

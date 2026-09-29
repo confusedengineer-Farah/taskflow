@@ -1,9 +1,8 @@
 import type { Request, Response } from "express"
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import * as bcrypt from "bcryptjs"
+import * as jwt from "jsonwebtoken"
 import prisma from "../lib/prisma"
 import { env } from "../config/env"
-import { error } from "node:console"
 
 interface RegisterBody {
     name?: string;
@@ -20,7 +19,7 @@ const makeToken = (id: number): string =>
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { email, name, password } =req.body as RegisterBody;
+        const { name, email, password } =req.body as RegisterBody;
         if(!name || !email || !password) {
             return res.status(400).json({ message: "Please fill in all fields"});
         }
@@ -33,7 +32,7 @@ export const register = async (req: Request, res: Response) => {
             return res.status(400).json({message: "Email is already registered"})
         }
         const hashed = await bcrypt.hash(password,10);
-        const user = await prisma.create({
+        const user = await prisma.user.create({
             data: {name: name.trim(), email: cleanEmail, password: hashed},
         });
         res.status(201).json({
